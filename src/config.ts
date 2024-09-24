@@ -28,7 +28,7 @@ async function startNuxtAndGetViteConfig(
   const { loadNuxt, buildNuxt } = await import('@nuxt/kit')
   const nuxt = await loadNuxt({
     cwd: rootDir,
-    dev: false,
+    dev: options.dev ?? false,
     dotenv: defu(options.dotenv, {
       cwd: rootDir,
       fileName: '.env.test',
@@ -88,6 +88,7 @@ export async function getVitestConfigFromNuxt(
 
   if (!options) {
     options = await startNuxtAndGetViteConfig(rootDir, {
+      dev: loadNuxtOptions.dev,
       dotenv: loadNuxtOptions.dotenv,
       overrides: {
         test: true,
@@ -218,6 +219,7 @@ export function defineVitestConfig(config: InlineConfig & { test?: VitestConfig 
     return defu(
       config,
       await getVitestConfigFromNuxt(undefined, {
+        dev: config.test?.environmentOptions?.nuxt?.dev,
         dotenv: config.test?.environmentOptions?.nuxt?.dotenv,
         overrides: structuredClone(overrides),
       }),
